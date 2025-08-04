@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	mongo_persistance "multiplayer-quiz-application/src/internal/adapters/persistance/mongo"
 	"multiplayer-quiz-application/src/internal/config"
 	"multiplayer-quiz-application/src/internal/interface/input/api/rest/routes"
 
@@ -15,7 +16,17 @@ func main() {
 		log.Fatalf("failed to load config: %v", err)
 	}
 	//2. Initialize DB connections
+
+	mongoDb, err := mongo_persistance.NewDatabase(config)
+	if err != nil {
+		log.Fatalf("failed to connect to mongo DB: %v", err)
+	}
+	defer mongoDb.Close()
+
 	//3. Initialize repo code
+
+	_ = mongo_persistance.NewQuestionsRepo(mongoDb)
+
 	//4. Initialize services
 	//5. Initialize handlers
 	//6. Initialize routes

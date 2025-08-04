@@ -8,7 +8,9 @@ import (
 )
 
 type Config struct {
-	PORT string
+	PORT                    string
+	MONGO_CONNECTION_STRING string
+	MONGO_DATABASE_NAME     string
 }
 
 func LoadConfig() (*Config, error) {
@@ -18,7 +20,9 @@ func LoadConfig() (*Config, error) {
 	}
 
 	config := Config{
-		PORT: os.Getenv("PORT"),
+		PORT:                    os.Getenv("PORT"),
+		MONGO_CONNECTION_STRING: os.Getenv("MONGO_CONNECTION_STRING"),
+		MONGO_DATABASE_NAME:     os.Getenv("MONGO_DATABASE_NAME"),
 	}
 
 	return &config, nil
