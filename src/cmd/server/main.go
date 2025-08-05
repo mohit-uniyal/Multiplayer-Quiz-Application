@@ -4,7 +4,9 @@ import (
 	"log"
 	mongo_persistance "multiplayer-quiz-application/src/internal/adapters/persistance/mongo"
 	"multiplayer-quiz-application/src/internal/config"
+	"multiplayer-quiz-application/src/internal/interface/input/api/rest/handler"
 	"multiplayer-quiz-application/src/internal/interface/input/api/rest/routes"
+	"multiplayer-quiz-application/src/internal/usecase"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -25,13 +27,19 @@ func main() {
 
 	//3. Initialize repo code
 
-	_ = mongo_persistance.NewQuestionsRepo(mongoDb)
+	quizesRepo := mongo_persistance.NewQuizesRepo(mongoDb)
 
 	//4. Initialize services
+
+	quizesService := usecase.NewQuizesService(quizesRepo)
+
 	//5. Initialize handlers
+
+	quizesHandlers := handler.NewQuizesHandler(quizesService)
+
 	//6. Initialize routes
 	app := fiber.New()
-	routes.InitializeRoutes(app)
+	routes.InitializeRoutes(app, quizesHandlers)
 	//7. Initialize server
 
 	app.Listen(":" + config.PORT)
